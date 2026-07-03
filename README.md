@@ -17,3 +17,9 @@ npm start
 ```
 
 The CLI scans `~/.claude/projects/**/*.jsonl`, shows a TUI picker, then calls `@loredotlink/sdk` with the selected session id.
+
+For non-interactive use, pass `--headless` to upload the first discovered session automatically. The CLI prints the selected session ID and title before uploading.
+
+```sh
+npm start --headless
+```

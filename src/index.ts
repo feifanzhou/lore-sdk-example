@@ -17,6 +17,7 @@ type ClaudeSession = {
 };
 
 async function main() {
+  const headless = isHeadlessMode();
   const uploadApiKey = process.env.LORE_UPLOAD_API_KEY?.trim();
   if (!uploadApiKey) {
     throw new Error('Missing LORE_UPLOAD_API_KEY. Copy .env.example to .env and set your Lore Upload API key.');
@@ -27,7 +28,7 @@ async function main() {
     throw new Error(`No Claude Code sessions found under ${CLAUDE_PROJECTS_DIR}`);
   }
 
-  const selected = await select({
+  const selected = headless ? sessions[0] : await select({
     message: 'Choose a Claude Code session to upload to Lore',
     pageSize: 15,
     choices: sessions.map((session) => ({
@@ -36,6 +37,9 @@ async function main() {
       description: `${session.id} · ${session.filePath}`,
     })),
   });
+
+  console.log(`Selected session ID: ${selected.id}`);
+  console.log(`Selected session title: ${selected.title}`);
 
   const uploadClient = new Lore.Upload(uploadApiKey, {
     apiHostname: process.env.LORE_API_HOSTNAME,
@@ -50,6 +54,10 @@ async function main() {
   });
 
   console.log(`Uploaded to Lore thread ${result.threadId}${result.reused ? ' (reused existing upload)' : ''}.`);
+}
+
+function isHeadlessMode() {
+  return process.argv.includes('--headless') || process.env.npm_config_headless === 'true';
 }
 
 async function findClaudeSessions(rootDir: string): Promise<ClaudeSession[]> {
