@@ -53,7 +53,7 @@ async function main() {
     },
   });
 
-  console.log(`Uploaded to Lore thread ${result.threadId}${result.reused ? ' (reused existing upload)' : ''}.`);
+  console.log(`Uploaded to Lore thread ${result.threadId}${result.reused ? ' (reused existing upload)' : ''}`);
 }
 
 function isHeadlessMode() {
